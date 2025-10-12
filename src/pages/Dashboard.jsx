@@ -1,0 +1,2 @@
+
+import React from 'react'; export default function Dashboard({ user }){ return (<div><h1 className="text-2xl font-bold">Welcome{user? `, ${user.name}`:''}</h1><div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6"><div className="bg-white p-4 rounded shadow">Total Sales</div><div className="bg-white p-4 rounded shadow">Total Purchases</div><div className="bg-white p-4 rounded shadow">Stock Value</div></div></div>); }
