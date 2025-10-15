@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-ro
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Products from "./pages/Products";
+import Purchases from "./pages/Purchases";
+import Sales from "./pages/Sales";
 import API from "./services/api";
 
 export default function App() {
@@ -38,11 +40,14 @@ export default function App() {
           <nav className="bg-white shadow-md p-4 flex justify-between items-center">
             <h1 className="text-xl font-bold text-blue-700">ShopLedger</h1>
             <div className="flex gap-4 items-center">
-              <Link
-                to="/products"
-                className="text-gray-700 hover:text-blue-600 font-medium"
-              >
+              <Link to="/products" className="text-gray-700 hover:text-blue-600 font-medium">
                 Products
+              </Link>
+              <Link to="/purchases" className="text-gray-700 hover:text-blue-600 font-medium">
+                Purchases
+              </Link>
+              <Link to="/sales" className="text-gray-700 hover:text-blue-600 font-medium">
+                Sales
               </Link>
               <button
                 onClick={async () => {
@@ -60,6 +65,8 @@ export default function App() {
           <div className="p-6">
             <Routes>
               <Route path="/products" element={<Products />} />
+              <Route path="/purchases" element={<Purchases />} />
+              <Route path="/sales" element={<Sales />} />
               <Route path="*" element={<Navigate to="/products" />} />
             </Routes>
           </div>
