@@ -1,50 +1,76 @@
 import React, { useState, useEffect } from "react";
-import Auth from "./components/Auth";
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Products from "./pages/Products";
 import API from "./services/api";
 
-function App() {
+export default function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Optional: check if user is already logged in on page load
+  // Check session
   useEffect(() => {
-    const fetchUser = async () => {
+    const checkSession = async () => {
       try {
         const res = await API.get("/auth/profile");
         setUser(res.data.data.user);
-      } catch (err) {
-        setUser(null); // not logged in
+      } catch {
+        setUser(null);
       }
+      setLoading(false);
     };
-    fetchUser();
+    checkSession();
   }, []);
 
-  const logout = async () => {
-    try {
-      await API.post("/auth/logout");
-      setUser(null);
-    } catch (err) {
-      alert("Logout failed");
-    }
-  };
+  if (loading)
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
+        Loading...
+      </div>
+    );
 
   return (
-    <div>
+    <Router>
       {user ? (
-        <div className="min-h-screen flex flex-col items-center justify-center">
-          <h1 className="text-2xl font-bold mb-4">Welcome, {user.name}</h1>
-          <p className="mb-4">Role: {user.role}</p>
-          <button
-            onClick={logout}
-            className="bg-red-600 text-white px-4 py-2 rounded"
-          >
-            Logout
-          </button>
+        <div className="min-h-screen bg-gray-100">
+          {/* Navbar */}
+          <nav className="bg-white shadow-md p-4 flex justify-between items-center">
+            <h1 className="text-xl font-bold text-blue-700">ShopLedger</h1>
+            <div className="flex gap-4 items-center">
+              <Link
+                to="/products"
+                className="text-gray-700 hover:text-blue-600 font-medium"
+              >
+                Products
+              </Link>
+              <button
+                onClick={async () => {
+                  await API.post("/auth/logout");
+                  setUser(null);
+                }}
+                className="bg-red-600 text-white px-3 py-1.5 rounded-lg hover:bg-red-700 transition"
+              >
+                Logout
+              </button>
+            </div>
+          </nav>
+
+          {/* Routes */}
+          <div className="p-6">
+            <Routes>
+              <Route path="/products" element={<Products />} />
+              <Route path="*" element={<Navigate to="/products" />} />
+            </Routes>
+          </div>
         </div>
       ) : (
-        <Auth setUser={setUser} />
+        <Routes>
+          <Route path="/login" element={<Login setUser={setUser} />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
       )}
-    </div>
+    </Router>
   );
 }
-
-export default App;
